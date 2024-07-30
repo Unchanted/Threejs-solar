@@ -1,4 +1,3 @@
-
 function SolarSystem(animated) {
     this.animated = animated;
 };
@@ -49,7 +48,7 @@ SolarSystem.heliocentric = function (materialLoader, scene) {
 
     var moon = factory.create('moon')
             .withSize(0.5)
-            .withYearDuration(4)
+            .withYearDuration(0.075)
             .withOrbit(earth, 3)
             .build();
     animated.push(moon);
@@ -64,16 +63,14 @@ SolarSystem.heliocentric = function (materialLoader, scene) {
 
     var phobos = factory.create('phobos')
             .withSize(0.5)
-            .withYearDuration(0.04)
-            .withDayDuration(1)
+            .withYearDuration(0.066)
             .withOrbit(mars, 2)
             .build();
     animated.push(phobos);
 
     var deimos = factory.create('deimos')
             .withSize(0.5)
-            .withYearDuration(0.04)
-            .withDayDuration(0.2)
+            .withYearDuration(0.25)
             .withOrbit(mars, 3)
             .build();
     animated.push(deimos);
@@ -91,6 +88,7 @@ SolarSystem.heliocentric = function (materialLoader, scene) {
             .withYearDuration(30)
             .withDayDuration(0.5)
             .withOrbit(sun, 62)
+            .withRing(5, 4)
             .build();
     animated.push(saturn);
 
@@ -99,6 +97,7 @@ SolarSystem.heliocentric = function (materialLoader, scene) {
             .withYearDuration(84)
             .withDayDuration(0.6)
             .withOrbit(sun, 78)
+            .withRing(4, 3)
             .build();
     animated.push(uranus);
 
