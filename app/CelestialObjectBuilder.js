@@ -1,4 +1,3 @@
-
 function CelestialObjectBuilder(materialLoader, name) {
     this.name = name;
     this.size = 0;
@@ -8,6 +7,9 @@ function CelestialObjectBuilder(materialLoader, name) {
     this.orbitingDistance = 0;
     this.orbitalSpeed = 0;
     this.axialSpeed = 0;
+    
+    this.ringRadius = 0;
+    this.ringWidth = 0;
 }
 
 CelestialObjectBuilder.prototype.constructor = CelestialObjectBuilder;
@@ -43,21 +45,59 @@ CelestialObjectBuilder.prototype.withOrbit = function (orbiting, distance) {
     return this;
 };
 
-CelestialObjectBuilder.prototype.build = function () {
-    var material;
-    if (this.light === undefined) {
-        material = this.materialLoader.asLambert(this.name);
-    } else {
-        material = this.materialLoader.asBasic(this.name);
-    }
-    var obj = new CelestialObject(this.size, material);
+CelestialObjectBuilder.prototype.planet = function () {
+    var geometry = new THREE.BoxGeometry(this.size, this.size, this.size);
+    var material = this.materialLoader.asLambert(this.name);
+    var obj = new CelestialObject(geometry, material);
     obj.name = this.name;
-    if (this.light !== undefined) {
-        obj.add(this.light);
-    }
     if (this.orbitingWhat !== undefined) {
         obj.orbiting(this.orbitingWhat, this.orbitingDistance);
     }
     obj.speed(this.orbitalSpeed, this.axialSpeed);
     return obj;
 };
+
+CelestialObjectBuilder.prototype.star = function() {
+    var geometry = new THREE.BoxGeometry(this.size, this.size, this.size);
+    var material = this.materialLoader.asBasic(this.name);
+    var obj = new CelestialObject(geometry, material);
+    obj.name = this.name;
+    obj.add(this.light);
+    if (this.orbitingWhat !== undefined) {
+        obj.orbiting(this.orbitingWhat, this.orbitingDistance);
+    }
+    obj.speed(this.orbitalSpeed, this.axialSpeed);
+    return obj;
+};
+
+CelestialObjectBuilder.prototype.ring = function() {
+    var inner = this.orbitingDistance;
+    var outer = inner + this.size;
+    var geometry = new THREE.RingBufferGeometry( inner, outer, 8, 1 );
+    this.uvUpdate(geometry);
+    var material = this.materialLoader.asLambertWithTransparency(this.name);
+    var obj = new CelestialObject(geometry, material);
+    obj.name = this.name;
+    obj.add(this.light);
+    if (this.orbitingWhat !== undefined) {
+        obj.orbiting(this.orbitingWhat, 0);
+    }
+    obj.speed(this.orbitalSpeed, this.axialSpeed);
+    obj.mesh.rotation.x = Math.PI/2;
+    return obj;    
+};
+
+CelestialObjectBuilder.prototype.uvUpdate = function(geometry) {
+    var uvs = geometry.attributes.uv.array;
+    var phi = geometry.parameters.phiSegments; // 8
+    var theta = geometry.parameters.thetaSegments; // 1
+    for ( var c = 0, j = 0; j <= phi; j ++ ) {
+        for ( var i = 0; i <= theta; i ++ ) {
+            uvs[c++] = i / theta,
+            uvs[c++] = j / phi;
+        }
+    }
+};
+
+
+
