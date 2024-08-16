@@ -138,11 +138,11 @@ SolarSystem.geocentric = function (materialLoader, scene) {
     var factory = new CelestialObjectFactory(materialLoader);
     var animated = [];
     
-    // Earth is stationary
+    // Earth is stationary and flat
     var earth = factory.create('earth')
         .withSize(3)
         .withDayDuration(1) // Earth rotates on its axis
-        .planet();
+        .planet(true); // Pass true to make the Earth flat
     animated.push(earth);
     scene.add(earth);
     
@@ -240,13 +240,4 @@ SolarSystem.geocentric = function (materialLoader, scene) {
         .planet();
     animated.push(neptune);
 
-    var pluto = factory.create('pluto')
-        .withSize(1)
-        .withYearDuration(248)
-        .withDayDuration(6)
-        .withOrbit(sun, 98)
-        .planet();
-    animated.push(pluto);
-
-    return new SolarSystem(animated);
-};
+   
