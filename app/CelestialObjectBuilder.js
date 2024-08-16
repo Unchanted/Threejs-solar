@@ -45,14 +45,8 @@ CelestialObjectBuilder.prototype.withOrbit = function (orbiting, distance) {
     return this;
 };
 
-CelestialObjectBuilder.prototype.planet = function (isFlat = false) {
-    var geometry;
-    if (isFlat && this.name === 'earth') {
-        geometry = new THREE.CylinderGeometry(this.size, this.size, 0.1, 32); // Flat Earth as a thin cylinder
-    } else {
-        geometry = new THREE.SphereGeometry(this.size, 32, 32); // Spherical shape for other planets
-    }
-
+CelestialObjectBuilder.prototype.planet = function () {
+    var geometry = new THREE.BoxGeometry(this.size, this.size, this.size);
     var material = this.materialLoader.asLambert(this.name);
     var obj = new CelestialObject(geometry, material);
     obj.name = this.name;
@@ -62,6 +56,7 @@ CelestialObjectBuilder.prototype.planet = function (isFlat = false) {
     obj.speed(this.orbitalSpeed, this.axialSpeed);
     return obj;
 };
+
 CelestialObjectBuilder.prototype.star = function() {
     var geometry = new THREE.BoxGeometry(this.size, this.size, this.size);
     var material = this.materialLoader.asBasic(this.name);

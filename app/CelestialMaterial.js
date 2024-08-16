@@ -1,4 +1,3 @@
-
 function CelestialMaterial(path, format) {
     this.path = path;
     this.format = format !== undefined ? format : '.png';
